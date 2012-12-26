@@ -1,0 +1,6 @@
+#
+# system.prop for smdkc110
+#
+rild.libpath=/system/lib/libhuawei-ril.so
+rild.libargs=-d /dev/ttyUSB2
+keyguard.no_require_sim=1
