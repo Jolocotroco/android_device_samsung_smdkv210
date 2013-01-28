@@ -89,7 +89,7 @@ TARGET_BOOTANIMATION_USE_RGB565 := true
 
 #TARGET_USE_HWDECODING_TVOUT := true
 
-#TARGET_SEC_OMX_BIG_MMAP_BUFFER_SIZE := true
+TARGET_SEC_OMX_BIG_MMAP_BUFFER_SIZE := true
 
 # TARGET_DISABLE_TRIPLE_BUFFERING can be used to disable triple buffering
 # on per target basis. On crespo it is possible to do so in theory
