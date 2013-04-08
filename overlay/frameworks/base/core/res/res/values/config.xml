@@ -172,4 +172,7 @@ in pages of size (in KB) indicated by this value -->
     <bool name="config_showNavigationBar">true</bool>
 
     <integer name="config_deviceHardwareKeys">7</integer>
+
+    <!-- Maximum number of supported users -->
+    <integer name="config_multiuserMaximumUsers">5</integer>
 </resources>
