@@ -130,6 +130,27 @@ PRODUCT_PACKAGES += \
 	libstagefrighthw \
 	librs_jni
 
+# Huawei 3G modem propietary files and PPP scripts
+PRODUCT_PACKAGES += \
+	libhuaweigeneric-ril
+
+PRODUCT_COPY_FILES += \
+	device/samsung/smdkv210/prebuilt/etc/init.gprs-pppd:system/etc/init.gprs-pppd \
+	device/samsung/smdkv210/prebuilt/etc/ppp/chap-secrets:system/etc/ppp/chap-secrets \
+	device/samsung/smdkv210/prebuilt/etc/ppp/gprs-connect-chat:system/etc/ppp/gprs-connect-chat \
+	device/samsung/smdkv210/prebuilt/etc/ppp/ip-down:system/etc/ppp/ip-down \
+	device/samsung/smdkv210/prebuilt/etc/ppp/ip-down-HUAWEI:system/etc/ppp/ip-down-HUAWEI \
+	device/samsung/smdkv210/prebuilt/etc/ppp/ip-up:system/etc/ppp/ip-up \
+	device/samsung/smdkv210/prebuilt/etc/ppp/ip-up-HUAWEI:system/etc/ppp/ip-up-HUAWEI \
+	device/samsung/smdkv210/prebuilt/etc/ppp/options.huawei:system/etc/ppp/options.huawei \
+	device/samsung/smdkv210/prebuilt/etc/ppp/pap-secrets:system/etc/ppp/pap-secrets \
+	device/samsung/smdkv210/prebuilt/etc/ppp/peers/pppd-ril.options:system/etc/ppp/peers/gprs \
+	device/samsung/smdkv210/prebuilt/etc/ppp/peers/pppd-ril.options:system/etc/ppp/peers/pppd-ril.options \
+	device/samsung/smdkv210/prebuilt/lib/libsecril-client.so:system/lib/libsecril-client.so
+
+PRODUCT_PROPERTY_OVERRIDES := \
+	keyguard.no_require_sim=true
+
 # Usb accessory
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
@@ -154,7 +175,7 @@ PRODUCT_COPY_FILES += \
 
 # The OpenGL ES API level that is natively supported by this device.
 # This is a 16.16 fixed point number
-PRODUCT_PROPERTY_OVERRIDES := \
+PRODUCT_PROPERTY_OVERRIDES += \
  	ro.opengles.version=131072
 
 # sysctl tweaks
