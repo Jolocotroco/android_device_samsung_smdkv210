@@ -36,7 +36,7 @@
 
 <StorageList xmlns:android="http://schemas.android.com/apk/res/android">
     <storage android:mountPoint="/storage/sdcard0"
-			 android:storageDescription="@string/storage_sd_card"
+			 android:storageDescription="@string/storage_internal"
 			 android:removable="false"
 			 android:allowMassStorage="true"
 			 android:primary="true"
@@ -48,9 +48,9 @@
 			 android:primary="false"
 			 android:maxFileSize="4096" />
     <storage android:mountPoint="/storage/udisk"
-                         android:storageDescription="@string/storage_usb"
-                         android:removable="true"
-                         android:allowMassStorage="false"
-                         android:primary="false"
+			 android:storageDescription="@string/storage_usb"
+			 android:removable="true"
+			 android:allowMassStorage="false"
+			 android:primary="false"
 			 android:maxFileSize="4096" />
 </StorageList>

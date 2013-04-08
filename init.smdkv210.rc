@@ -1,12 +1,62 @@
 import init.smdkv210.usb.rc
 
+on init
+    export EXTERNAL_STORAGE /storage/sdcard0
+    export SECONDARY_STORAGE /storage/sdcard1
+
+    mkdir /storage/sdcard0 0000 root root
+    mkdir /storage/sdcard1 0000 root root
+    mkdir /storage/udisk 0000   root root
+
+    symlink /storage/sdcard0 /sdcard
+    symlink /storage/sdcard1 /extsd
+    symlink /storage/udisk   /udisk
+
+    symlink /storage/sdcard0 /mnt/sdcard
+    symlink /storage/sdcard1 /mnt/extsd
+    symlink /storage/udisk /mnt/udisk
+
+on fs
+    mount_all /fstab.smdkv210
+
+on post-fs-data
+    # wifi
+    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+
+    # bluetooth.
+    chown bluetooth net_bt_stack /system/etc/bluetooth
+    chmod 770 /system/etc/bluetooth
+
+    setprop ro.bt.bdaddr_path "/system/etc/bluetooth/bdaddr"
+    chown bluetooth net_bt_stack ro.bt.bdaddr_path
+    chown bluetooth net_bt_stack /dev/s3c2410_serial0
+    chmod 0600 /dev/s3c2410_serial0
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+
+    # for dhcpd
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+    chmod 0770 /data/misc/dhcp
+
+    # lcd
+    chmod 0666 /sys/class/backlight/pwm-backlight.0/brightness
+    chown system system /sys/class/backlight/pwm-backlight.0/brightness
+
+    # Increase readahead buffers on MMC devices
+    write /sys/block/mmcblk0/bdi/read_ahead_kb 2048
+    write /sys/block/mmcblk1/bdi/read_ahead_kb 2048
+
+    setprop vold.post_fs_data_done 1
+
 on boot
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
     setprop ro.build.product smdkv210
     setprop ro.product.device smdkv210
     setprop ro.radio.noril yes
-    setprop ro.bt.bdaddr_path "/system/etc/bluetooth/softmac"
 
 # fake some battery state
     setprop status.battery.state Slow
@@ -14,77 +64,14 @@ on boot
     setprop status.battery.level_raw  50
     setprop status.battery.level_scale 9
 
-# cpufreq, set ondemand governor
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
-
-    # Increase readahead buffers on MMC devices
-    write /sys/block/mmcblk0/bdi/read_ahead_kb 2048
-    write /sys/block/mmcblk1/bdi/read_ahead_kb 2048
-
-on fs
-    mount_all /fstab.smdkv210
-
-    export EXTERNAL_STORAGE /storage/sdcard0
-
-    mkdir /storage 0050 system sdcard_r
-    mkdir /storage/sdcard0 0000 system system
-    mkdir /storage/sdcard1 0000 system system
-    mkdir /storage/udisk 0000 system system
-
-    symlink /storage/sdcard0 /sdcard
-    symlink /storage/sdcard1 /extsd
-    symlink /storage/udisk /udisk
-
-    symlink /storage/sdcard0 /mnt/sdcard
-    symlink /storage/sdcard1 /mnt/extsd
-    symlink /storage/udisk /mnt/udisk
-
-# permissions for bluetooth.
-    chown bluetooth bluetooth /system/etc/bluetooth
-    chmod 770 /system/etc/bluetooth
-    chown bluetooth bluetooth ro.bt.bdaddr_path
-    chown bluetooth bluetooth /dev/s3c2410_serial3
-    chmod 0600 /dev/s3c2410_serial3
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-
-# Permissions for System Server and daemons.
-    chown system system /sys/class/backlight/pwm-backlight.0/brightness
-
-# Configure and enable KSM
-    write /sys/kernel/mm/ksm/pages_to_scan 100
-    write /sys/kernel/mm/ksm/sleep_millisecs 500
-    write /sys/kernel/mm/ksm/run 1
-
-on post-fs-data
-# create wifi folders
-    mkdir /system/etc/wifi 0777 wifi wifi
-    chown wifi wifi /system/etc/wifi
-    chmod 0777 /system/etc/wifi
-    chown wifi wifi /system/etc/wifi/wpa_supplicant.conf
-    chmod 0777 /system/etc/wifi/wpa_supplicant.conf
-
-    mkdir /data/system/ 0771 system system
-    chown system system /data/system
-    chmod 0771 /data/system
-
-    # wpa_supplicant control socket for android wifi.c
-    mkdir /data/misc/wifi 0777 wifi wifi
-    chown wifi wifi /data/misc/wifi
-    chmod 0777 /data/misc/wifi
-    mkdir /data/misc/wifi/sockets 0777 wifi wifi
-    chown wifi wifi /data/misc/wifi/sockets
-    chmod 0777 /data/misc/wifi/sockets
-    chown wifi wifi /data/misc/wifi/wpa_supplicant.conf
-    chmod 0777 /data/misc/wifi/wpa_supplicant.conf
-
-    # for dhcpd
-    mkdir /data/misc/dhcp 0777 dhcp dhcp
-    chown dhcp dhcp /data/misc/dhcp
-    chmod 0777 /data/misc/dhcp
-
-    setprop vold.post_fs_data_done 1
+# create filesystem if necessary
+service setup_fs /system/bin/setup_fs \
+    /dev/block/mmcblk0p2 \
+    /dev/block/mmcblk0p3
+    class core
+    user root
+    group root
+    oneshot
 
 # 3D init
 service pvrsrvinit /system/vendor/bin/pvrsrvinit
@@ -113,8 +100,8 @@ service hostapd /system/bin/hostapd -dddd /system/etc/wifi/hostapd.conf
     disabled
     oneshot
 
-# Wi-Fi (DHCPCD)
-service dhcpcd_wlan0 /system/bin/dhcpcd -ABKL
+# DHCPCD
+service dhcpcd_wlan0 /system/bin/dhcpcd -aABDKL
     class main
     disabled
     oneshot
@@ -124,31 +111,33 @@ service dhcpcd_p2p /system/bin/dhcpcd -aABKL
     disabled
     oneshot
 
-# Wi-Fi (IP Renew)
-service iprenew_wlan0 /system/bin/dhcpcd -n
-    class main
-    disabled
-    oneshot
-
-# Bluetooth
-service hciattach /system/bin/hciattach -n /dev/s3c2410_serial3 any 38400 flow                             
-    class main
-    disabled
-
-# Bluetooth (DHCPCD)
 service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
     class main
     disabled
     oneshot
 
-# Bluetooth (IP Renew)
+service dhcpcd_eth0 /system/bin/dhcpcd -ABKL -f/system/etc/dhcpcd/dhcpcd.conf
+    class main
+    disabled
+    oneshot
+
+# IP Renew
+service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+service iprenew_p2p /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
 service iprenew_bnep0 /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
 
-# Check property for first boot
-service check_property /system/xbin/busybox sh /system/etc/check_property.sh
-    class main
+service iprenew_eth0 /system/bin/dhcpcd -n
+    disabled
     oneshot
 
