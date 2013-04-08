@@ -40,6 +40,10 @@ BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/smdkv210/bluetooth
 
+# Video Devices
+BOARD_V4L2_DEVICE := /dev/video1
+BOARD_CAMERA_DEVICE := /dev/video0
+
 BOARD_USES_HGL := true
 DEFAULT_FB_NUM := 2
 
