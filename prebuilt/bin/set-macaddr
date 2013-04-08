@@ -1,0 +1,30 @@
+#!/system/xbin/busybox sh
+
+# Mount /, /system as rw.
+mount -o rw,remount /
+mount -o rw,remount /system
+
+#check softmac
+if [ -e /system/wifi/softmac ]
+then
+	echo update softmac
+else
+	touch /system/wifi/softmac
+	echo 00:50:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10` > /system/wifi/softmac
+	sync
+fi
+
+#check bdaddr
+if [ -e /system/etc/bluetooth/bdaddr ]
+then
+	echo update bdaddr
+else
+	touch /system/etc/bluetooth/bdaddr
+	echo ae:2d:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10`:`expr $RANDOM % 89 + 10` > /system/etc/bluetooth/bdaddr
+sync
+fi
+
+# Mount /, /system as ro.
+mount -o ro,remount /system
+mount -o ro,remount /
+

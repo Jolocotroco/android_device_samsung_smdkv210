@@ -61,6 +61,7 @@ PRODUCT_PACKAGES += \
 
 # Wi-Fi
 PRODUCT_COPY_FILES += \
+	device/samsung/smdkv210/prebuilt/bin/set-macaddr:system/bin/set-macaddr \
 	device/samsung/smdkv210/prebuilt/etc/dhcpcd/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
 	device/samsung/smdkv210/prebuilt/etc/wifi/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	device/samsung/smdkv210/prebuilt/etc/wifi/hostapd.conf:system/etc/wifi/hostapd.conf \

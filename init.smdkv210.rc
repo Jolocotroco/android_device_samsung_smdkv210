@@ -80,6 +80,11 @@ service pvrsrvinit /system/vendor/bin/pvrsrvinit
     group root
     oneshot
 
+# set device specific MAC addresses
+service set-macaddr /system/bin/set-macaddr
+    class main
+    oneshot
+
 # Wi-Fi
 service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
     class main
