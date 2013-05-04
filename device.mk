@@ -29,8 +29,17 @@ PRODUCT_LOCALES += hdpi
 PRODUCT_COPY_FILES := \
 	device/samsung/smdkv210/init.smdkv210.rc:root/init.smdkv210.rc \
 	device/samsung/smdkv210/init.smdkv210.usb.rc:root/init.smdkv210.usb.rc \
+	device/samsung/smdkv210/init.recovery.smdkv210.rc:root/init.recovery.smdkv210.rc \
+	device/samsung/smdkv210/init.smdkv210.usb.rc:recovery/root/usb.rc \
 	device/samsung/smdkv210/fstab.smdkv210:root/fstab.smdkv210 \
 	device/samsung/smdkv210/ueventd.smdkv210.rc:root/ueventd.smdkv210.rc
+
+# recovery kernel
+PRODUCT_COPY_FILES += \
+    device/samsung/smdkv210/recovery.bin:recovery.bin
+
+PRODUCT_COPY_FILES += \
+    device/samsung/smdkv210/updater.sh:updater.sh
 
 # These are the hardware-specific configuration files
 PRODUCT_COPY_FILES += \

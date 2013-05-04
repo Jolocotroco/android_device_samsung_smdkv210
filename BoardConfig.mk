@@ -25,11 +25,13 @@ TARGET_ARCH := arm
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_ARCH_VARIANT_CPU := cortex-a8
 ARCH_ARM_HAVE_TLS_REGISTER := true
+TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
+TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
-TARGET_PREBUILT_KERNEL := device/samsung/smdkv210/zImage
 TARGET_PROVIDES_INIT_TARGET_RC := true
+TARGET_RECOVERY_INITRC := device/samsung/smdkv210/recovery.rc
 
 TARGET_BOARD_PLATFORM := s5pc110
 TARGET_BOARD_PLATFORM_GPU := POWERVR_SGX540_120
@@ -46,6 +48,34 @@ BOARD_CAMERA_DEVICE := /dev/video0
 
 BOARD_USES_HGL := true
 DEFAULT_FB_NUM := 2
+
+# Device related defines
+BOARD_NAND_PAGE_SIZE := 4096
+BOARD_NAND_SPARE_SIZE := 128
+BOARD_KERNEL_BASE := 0x20008000
+BOARD_KERNEL_PAGESIZE := 4096
+BOARD_KERNEL_CMDLINE := console=ttySAC0,115200 init=/init no_console_suspend
+
+BOARD_BOOTIMAGE_PARTITION_SIZE := 4194304
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 6291456
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 283115520
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 1074790400
+BOARD_FLASH_BLOCK_SIZE := 131072
+
+# kernel
+TARGET_KERNEL_SOURCE := kernel/samsung/smdkv210
+TARGET_KERNEL_CONFIG := cyanogenmod_mid_defconfig
+
+# Recovery
+TARGET_USERIMAGES_USE_EXT4 := true
+BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/smdkv210/recovery/graphics.c
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/smdkv210/recovery/keys.c
+BOARD_CUSTOM_BOOTIMG_MK := device/samsung/smdkv210/shbootimg.mk
+BOARD_USES_MMCUTILS := true
+BOARD_HAS_NO_MISC_PARTITION := true
+
+# Releasetools
+TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/smdkv210
 
 # skia
 BOARD_USE_SKIA_LCDTEXT := true
