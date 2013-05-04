@@ -64,7 +64,7 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 
 # kernel
 TARGET_KERNEL_SOURCE := kernel/samsung/smdkv210
-TARGET_KERNEL_CONFIG := cyanogenmod_mid_defconfig
+TARGET_KERNEL_CONFIG := ubuntu_mid_defconfig
 
 # Recovery
 TARGET_USERIMAGES_USE_EXT4 := true
